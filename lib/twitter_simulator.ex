@@ -3,16 +3,7 @@ defmodule TwitterSimulator do
   Documentation for TwitterSimulator.
   """
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> TwitterSimulator.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def start_simulation() do
+    IO.puts("Started Simulation")
   end
 end
