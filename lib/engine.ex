@@ -26,6 +26,7 @@ defmodule TwitterEngine do
 
     Enum.each(users_to_subscribe, fn user_to_subscribe ->
       append_items_by_key_in_table(:followers, user_to_subscribe, [user]) end)
+    users_to_subscribe
   end
 
 
