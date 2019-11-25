@@ -64,15 +64,43 @@ defmodule TwitterEngine do
   end
 
   def fetch_user_tweets(user) do
-    :ets.lookup(:tweets, user)
+    result = :ets.lookup(:tweets, user)
+    if result == [] do
+      result
+    else
+      [{_, tweets}] = result
+      tweets
+    end
   end
 
   def fetch_tweets_with_hashtag(hashtag) do
-    :ets.lookup(:tweets, hashtag)
+    result = :ets.lookup(:hashtags, hashtag)
+    if result == [] do
+      result
+    else
+      [{_user, tweets_with_hashtags}] = result
+      tweets_with_hashtags
+    end
   end
 
   def fetch_tweets_with_mentions(user) do
-    :ets.lookup(:mentions, user)
+    result = :ets.lookup(:mentions, user)
+    if result == [] do
+      result
+    else
+      [{_user, tweets_with_mentions}] = result
+      tweets_with_mentions
+    end
+  end
+
+  def get_users_I_follow(user) do
+    result = :ets.lookup(:following, user)
+    if result == [] do
+      result
+    else
+      [{_user, following}] = result
+      following
+    end
   end
 
   def get_user_pid(user) do
@@ -83,6 +111,10 @@ defmodule TwitterEngine do
       [{_user, pid}] = result
       pid
     end
+  end
+
+  def is_user_logged_in(user) do
+    :ets.member(:activeUsers, user)
   end
 
   def login_user(user) do
