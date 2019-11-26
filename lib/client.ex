@@ -45,12 +45,17 @@ defmodule Client do
   end
 
   def handle_cast({:receiveTweet, from_user, tweet_text}, user_id) do
-    IO.puts(user_id <> " received from " <> from_user <> " \"" <> tweet_text <> "\"\n")
+    IO.puts(user_id <> "> received from " <> from_user <> " \"" <> tweet_text <> "\"\n")
+    {:noreply, user_id}
+  end
+
+  def handle_cast({:receiveMention, from_user, tweet_text}, user_id) do
+    IO.puts(user_id <> "> received mention from " <> from_user <> " \"" <> tweet_text <> "\"\n")
     {:noreply, user_id}
   end
 
   def handle_cast({:receiveQueryResults, resultsType, results}, user_id) do
-      IO.puts(user_id <> " received results :" <>
+      IO.puts(user_id <> "> received results :" <>
       "#{resultsType}" <> "->\n" <> "#{results}" <> "\n")
       {:noreply, user_id}
   end

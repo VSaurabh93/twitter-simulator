@@ -32,10 +32,20 @@ use GenServer
 
   def handle_cast({:tweet, {user_id, tweet_text}}, state) do
     TwitterEngine.write_tweet(user_id, tweet_text)
+
+    # tweet to followers
     TwitterEngine.get_my_followers(user_id) |> Enum.each(fn follower ->
       client_pid = TwitterEngine.get_user_pid(follower)
       GenServer.cast(client_pid, {:receiveTweet, user_id, tweet_text})
     end)
+
+    # tweet to mentioned users
+    {_tweet, mentions, _hashtags} = Utils.extract_tweet_info(tweet_text)
+    Enum.each(mentions, fn mentioned_user ->
+      client_pid = TwitterEngine.get_user_pid(mentioned_user)
+      GenServer.cast(client_pid, {:receiveMention, user_id, tweet_text})
+    end)
+
     {:noreply, state}
   end
 
