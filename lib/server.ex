@@ -10,9 +10,19 @@ use GenServer
     {:reply, :registered, state}
   end
 
+  def handle_call({:delete_user, user}, _from, state) do
+    TwitterEngine.delete_user(user)
+    {:reply, :deleted, state}
+  end
+
   def handle_call({:login_user, user}, _from, state) do
     TwitterEngine.login_user(user)
     {:reply, :loggedIn, state}
+  end
+
+  def handle_call({:logoff_user, user}, _from, state) do
+    TwitterEngine.login_user(user)
+    {:reply, :loggedOut, state}
   end
 
   def handle_call({:subscribe, user, users_to_subscribe}, _from, state) do

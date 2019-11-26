@@ -6,14 +6,30 @@ defmodule Client do
   end
 
   def init({user_id}) do
-    _reply = GenServer.call(:server, {:register_user, user_id, self()})
-    IO.inspect("Registered user " <> user_id)
     {:ok, user_id}
+  end
+
+  def handle_call(:register, _from, user_id) do
+    reply = GenServer.call(:server, {:register_user, user_id, self()})
+    IO.inspect("Registered user " <> user_id)
+    {:reply, reply, user_id}
+  end
+
+  def handle_call(:delete_user, _from, user_id) do
+    reply = GenServer.call(:server, {:delete_user, user_id})
+    IO.inspect("Deleted user " <> user_id)
+    {:reply, reply, user_id}
   end
 
   def handle_call(:login, _from, user_id) do
     reply = GenServer.call(:server, {:login_user, user_id})
     IO.inspect("logged in user " <> user_id)
+    {:reply, reply, user_id}
+  end
+
+  def handle_call(:logoff, _from, user_id) do
+    reply = GenServer.call(:server, {:logoff_user, user_id})
+    IO.inspect("logged out user " <> user_id)
     {:reply, reply, user_id}
   end
 
@@ -30,6 +46,7 @@ defmodule Client do
 
   def handle_cast({:receiveTweet, from_user, tweet_text}, user_id) do
     IO.puts(user_id <> " received from " <> from_user <> " \"" <> tweet_text <> "\"")
+    {:noreply, user_id}
   end
 
 end
