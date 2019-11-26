@@ -22,7 +22,9 @@ defmodule TwitterSimulator do
       GenServer.call(pid, {:subscribe, users_to_subscribe})
     end)
 
-    IO.puts("Finished Simulation")
-    System.halt(0)
+    GenServer.cast(Enum.at(clients, 0) |> elem(1), {:tweet, Utils.generate_random_tweet(users)})
+
+    # IO.puts("Finished Simulation")
+    # System.halt(0)
   end
 end

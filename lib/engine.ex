@@ -104,6 +104,16 @@ defmodule TwitterEngine do
     end
   end
 
+  def get_my_followers(user) do
+    result = :ets.lookup(:followers, user)
+    if result == [] do
+      result
+    else
+      [{_user, followers}] = result
+      followers
+    end
+  end
+
   def get_user_pid(user) do
     result = :ets.lookup(:users, user)
     if result == [] do

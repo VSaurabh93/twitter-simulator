@@ -23,5 +23,14 @@ defmodule Client do
     {:reply, users_subscribed, user_id}
   end
 
+  def handle_cast({:tweet, tweet_text}, user_id) do
+    GenServer.cast(:server, {:tweet, {user_id, tweet_text}})
+    {:noreply, user_id}
+  end
+
+  def handle_cast({:receiveTweet, from_user, tweet_text}, user_id) do
+    IO.puts(user_id <> " received from " <> from_user <> " \"" <> tweet_text <> "\"")
+  end
+
 end
 
