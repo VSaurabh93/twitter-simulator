@@ -34,9 +34,8 @@ defmodule Utils do
   def generate_random_tweet(user_pool) do
 
     tweet_text = Enum.take_random(@tweet_text_pool, 1)
-    hashtags = Enum.take_random(@hashtags_pool, 3)
+    hashtags = Enum.take(@hashtags_pool, 3) |> Enum.take_random(1)
     mentions = Enum.take_random(user_pool, 2)
-
     tweet = tweet_text ++  mentions ++ hashtags
     Enum.reduce(tweet, fn(x, acc) -> acc <> " " <> x end)
   end

@@ -39,6 +39,30 @@ use GenServer
     {:noreply, state}
   end
 
+  def handle_cast({:querySubscribed, user}, state) do
+    following = TwitterEngine.get_users_I_follow(user)
+    tweets = Enum.map(following, fn followed_user ->
+      {followed_user, TwitterEngine.fetch_user_tweets(followed_user)}
+    end)
+    client_pid = TwitterEngine.get_user_pid(user)
+    GenServer.cast(client_pid, {:receiveQueryResults, :querySubscribed, tweets})
+    {:noreply, state}
+  end
+
+  def handle_cast({:queryHashtags, hashtag, user}, state) do
+    tweets = TwitterEngine.fetch_tweets_with_hashtag(hashtag)
+    client_pid = TwitterEngine.get_user_pid(user)
+    GenServer.cast(client_pid, {:receiveQueryResults, :queryHashtags, {hashtag, tweets}})
+    {:noreply, state}
+  end
+
+  def handle_cast({:queryMentions, user}, state) do
+    tweets = TwitterEngine.fetch_tweets_with_mentions(user)
+    client_pid = TwitterEngine.get_user_pid(user)
+    GenServer.cast(client_pid, {:receiveQueryResults, :queryMentions, tweets})
+    {:noreply, state}
+  end
+
 
   def init(state) do
     TwitterEngine.initialize_tables()

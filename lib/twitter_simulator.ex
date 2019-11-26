@@ -24,9 +24,23 @@ defmodule TwitterSimulator do
       GenServer.call(pid, {:subscribe, users_to_subscribe})
     end)
 
-    GenServer.cast(Enum.at(clients, 0) |> elem(1), {:tweet, Utils.generate_random_tweet(users)})
-    GenServer.call(Enum.at(clients, 0) |> elem(1), :logoff)
-    GenServer.call(Enum.at(clients, 0) |> elem(1), :delete_user)
+    Enum.each(clients, fn {_user, pid} ->
+      GenServer.cast(pid, {:tweet, Utils.generate_random_tweet(users)})
+    end)
+
+    :timer.sleep(1000)
+
+    Enum.each(clients, fn {_user, pid} ->
+      #GenServer.cast(pid, {:querySubscribed})
+      GenServer.cast(pid, {:queryMentions})
+      #GenServer.cast(pid, {:queryHashtags, "#yoga"})
+    end)
+
+    # GenServer.call(Enum.at(clients, 0) |> elem(1), :logoff)
+    # GenServer.call(Enum.at(clients, 0) |> elem(1), :delete_user)
+    hashtags = ["#yoga", "#technology", "#science"]
+    hashtags
+
     # IO.puts("Finished Simulation")
     # System.halt(0)
   end

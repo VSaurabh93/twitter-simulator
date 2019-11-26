@@ -45,7 +45,28 @@ defmodule Client do
   end
 
   def handle_cast({:receiveTweet, from_user, tweet_text}, user_id) do
-    IO.puts(user_id <> " received from " <> from_user <> " \"" <> tweet_text <> "\"")
+    IO.puts(user_id <> " received from " <> from_user <> " \"" <> tweet_text <> "\"\n")
+    {:noreply, user_id}
+  end
+
+  def handle_cast({:receiveQueryResults, resultsType, results}, user_id) do
+      IO.puts(user_id <> " received results :" <>
+      "#{resultsType}" <> "->\n" <> "#{results}" <> "\n")
+      {:noreply, user_id}
+  end
+
+  def handle_cast({:querySubscribed}, user_id) do
+    GenServer.cast(:server, {:querySubscribed, user_id})
+    {:noreply, user_id}
+  end
+
+  def handle_cast({:queryHashtags, hashtag}, user_id) do
+    GenServer.cast(:server, {:queryHashtags, hashtag, user_id})
+    {:noreply, user_id}
+  end
+
+  def handle_cast({:queryMentions}, user_id) do
+    GenServer.cast(:server, {:queryMentions, user_id})
     {:noreply, user_id}
   end
 
