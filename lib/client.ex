@@ -44,6 +44,14 @@ defmodule Client do
     {:noreply, user_id}
   end
 
+  def handle_cast({:retweet, original_author, tweet_text}, user_id) do
+    IO.puts("inside retweet")
+    tweet_text =
+    if Utils.is_retweet(tweet_text) == false, do: Utils.prepare_retweet(original_author, tweet_text), else: tweet_text
+    GenServer.cast(:server, {:tweet, {user_id, tweet_text}})
+    {:noreply, user_id}
+  end
+
   def handle_cast({:receiveTweet, from_user, tweet_text}, user_id) do
     IO.puts(user_id <> "> received from " <> from_user <> " \"" <> tweet_text <> "\"\n")
     {:noreply, user_id}

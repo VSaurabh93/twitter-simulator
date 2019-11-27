@@ -6,7 +6,12 @@ defmodule Utils do
   end
 
   def generate_tweet_id() do
-    "no_id"
+    current_time = :os.system_time(:millisecond)
+    random_no = Enum.random(0..1000)
+    sha = :crypto.hash_init(:sha256)
+    sha = :crypto.hash_update(sha, to_string(current_time))
+    sha = :crypto.hash_update(sha, to_string(random_no))
+    :crypto.hash_final(sha) |> Base.encode16() |> String.slice(0..7)
   end
 
   @tweet_text_pool  [
@@ -33,10 +38,20 @@ defmodule Utils do
 
   def generate_random_tweet(user_pool) do
 
-    tweet_text = Enum.take_random(@tweet_text_pool, 1)
+    #tweet_text = Enum.take_random(@tweet_text_pool, 1)
+    tweet_text = ["This is a tweet"]
     hashtags = Enum.take(@hashtags_pool, 3) |> Enum.take_random(1)
     mentions = Enum.take_random(user_pool, 2)
     tweet = tweet_text ++  mentions ++ hashtags
-    Enum.reduce(tweet, fn(x, acc) -> acc <> " " <> x end)
+    Enum.reduce(tweet, fn(x, acc) -> acc <> " " <> x end) <> "."
+  end
+
+  def is_retweet(tweet_text) do
+    #use regex to check if the tweet text contains the word "retweeted"
+      tweet_text =~ ~r/retweeted/
+  end
+
+  def prepare_retweet(original_author, tweet_text) do
+    "[retweeted: " <> original_author <> "]" <> tweet_text
   end
 end
