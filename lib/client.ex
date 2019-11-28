@@ -46,7 +46,6 @@ defmodule Client do
   end
 
   def handle_cast({:retweet, original_author, tweet_text}, user_id) do
-    IO.puts("inside retweet")
     tweet_text =
     if Utils.is_retweet(tweet_text) == false, do: Utils.prepare_retweet(original_author, tweet_text), else: tweet_text
     GenServer.cast(:server, {:tweet, {user_id, tweet_text}})
