@@ -36,14 +36,18 @@ use GenServer
     # tweet to followers
     TwitterEngine.get_my_followers(user_id) |> Enum.each(fn follower ->
       client_pid = TwitterEngine.get_user_pid(follower)
-      GenServer.cast(client_pid, {:receiveTweet, user_id, tweet_text})
+      if TwitterEngine.is_user_logged_in(follower) == true do
+        GenServer.cast(client_pid, {:receiveTweet, user_id, tweet_text})
+      end
     end)
 
     # tweet to mentioned users
     {_tweet, mentions, _hashtags} = Utils.extract_tweet_info(tweet_text)
     Enum.each(mentions, fn mentioned_user ->
       client_pid = TwitterEngine.get_user_pid(mentioned_user)
-      GenServer.cast(client_pid, {:receiveMention, user_id, tweet_text})
+      if TwitterEngine.is_user_logged_in(mentioned_user) == true do
+        GenServer.cast(client_pid, {:receiveMention, user_id, tweet_text})
+      end
     end)
 
     {:noreply, state}
