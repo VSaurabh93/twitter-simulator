@@ -4,8 +4,11 @@ defmodule TwitterSimulator do
   """
 
   def start_simulation() do
+
+    IO.puts(System.argv())
     IO.puts("Started Simulation")
     Server.start_link()
+    CounterService.start_link()
 
     users = ["@bestuser", "@TweetOfGod", "@VSaurabh93"]
     clients = Enum.map(users, fn user ->
@@ -35,6 +38,10 @@ defmodule TwitterSimulator do
       GenServer.cast(pid, {:queryMentions})
       #GenServer.cast(pid, {:queryHashtags, "#yoga"})
     end)
+
+    :timer.sleep(1000)
+
+    CounterService.get_statistics()
 
     # GenServer.call(Enum.at(clients, 0) |> elem(1), :logoff)
     # GenServer.call(Enum.at(clients, 0) |> elem(1), :delete_user)

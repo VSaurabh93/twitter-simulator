@@ -41,6 +41,7 @@ defmodule Client do
 
   def handle_cast({:tweet, tweet_text}, user_id) do
     GenServer.cast(:server, {:tweet, {user_id, tweet_text}})
+    CounterService.update_counter(:incrementTweetCount)
     {:noreply, user_id}
   end
 
@@ -49,11 +50,13 @@ defmodule Client do
     tweet_text =
     if Utils.is_retweet(tweet_text) == false, do: Utils.prepare_retweet(original_author, tweet_text), else: tweet_text
     GenServer.cast(:server, {:tweet, {user_id, tweet_text}})
+    CounterService.update_counter(:incrementRetweetCount)
     {:noreply, user_id}
   end
 
   def handle_cast({:receiveTweet, from_user, tweet_text}, user_id) do
     IO.puts(user_id <> "> received from " <> from_user <> " \"" <> tweet_text <> "\"\n")
+    CounterService.update_counter(:incrementReceivedTweetsCount)
     {:noreply, user_id}
   end
 
@@ -65,6 +68,13 @@ defmodule Client do
   def handle_cast({:receiveQueryResults, resultsType, results}, user_id) do
       IO.puts(user_id <> "> received results :" <>
       "#{resultsType}" <> "->\n" <> "#{results}" <> "\n")
+
+      cond do
+        resultsType == :querySubscribed -> CounterService.update_counter(:incrementQueryTweetsCount)
+        resultsType == :queryHashtags -> CounterService.update_counter(:incrementQueryHashtagsCount)
+        resultsType == :queryMentions -> CounterService.update_counter(:incrementQueryMentionsCount)
+        true -> true
+      end
       {:noreply, user_id}
   end
 
