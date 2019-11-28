@@ -24,8 +24,8 @@ defmodule ClientAPI do
     GenServer.call(pid, {:subscribe, users_to_subscribe})
   end
 
-  def tweet(tweets,pid) do
-    GenServer.cast(pid, {:tweet, tweets})
+  def tweet(pid, tweet) do
+    GenServer.cast(pid, {:tweet, tweet})
   end
 
   def logoff(pid) do
