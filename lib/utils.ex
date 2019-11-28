@@ -54,4 +54,28 @@ defmodule Utils do
   def prepare_retweet(original_author, tweet_text) do
     "[retweeted: " <> original_author <> "]" <> tweet_text
   end
+
+  def query_subscribed_tweets_prettify(query_results) do
+    prettified = Enum.map(query_results, fn {user, tweets} ->
+        [user <> ":"] ++ tweets
+    end)
+    prettified = List.flatten(prettified)
+    Enum.reduce(prettified, fn(x, acc) -> acc <> "\n" <> x end) <> "\n"
+  end
+
+  def query_hashtags_prettify(query_result) do
+    if query_result != [] do
+      Enum.reduce(query_result, fn(x, acc) -> acc <> "\n" <> x end) <> "\n"
+    else
+      ""
+    end
+  end
+
+  def query_mentions_prettify(query_result) do
+    if query_result != [] do
+      Enum.reduce(query_result, fn(x, acc) -> acc <> "\n" <> x end) <> "\n"
+    else
+      ""
+    end
+  end
 end

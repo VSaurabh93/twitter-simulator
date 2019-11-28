@@ -55,13 +55,13 @@ defmodule Client do
   end
 
   def handle_cast({:receiveTweet, from_user, tweet_text}, user_id) do
-    IO.puts(user_id <> "> received from " <> from_user <> " \"" <> tweet_text <> "\"\n")
+    IO.puts(user_id <> "> received tweet from " <> from_user <> " \"" <> tweet_text <> "\"")
     CounterService.update_counter(:incrementReceivedTweetsCount)
     {:noreply, user_id}
   end
 
   def handle_cast({:receiveMention, from_user, tweet_text}, user_id) do
-    IO.puts(user_id <> "> received mention from " <> from_user <> " \"" <> tweet_text <> "\"\n")
+    IO.puts(user_id <> "> received mention from " <> from_user <> " \"" <> tweet_text <> "\"")
     {:noreply, user_id}
   end
 
@@ -78,19 +78,46 @@ defmodule Client do
       {:noreply, user_id}
   end
 
-  def handle_cast({:querySubscribed}, user_id) do
-    GenServer.cast(:server, {:querySubscribed, user_id})
-    {:noreply, user_id}
+  # def handle_cast({:querySubscribed}, user_id) do
+  #   GenServer.cast(:server, {:querySubscribed, user_id})
+  #   {:noreply, user_id}
+  # end
+
+  # def handle_cast({:queryHashtags, hashtag}, user_id) do
+  #   GenServer.cast(:server, {:queryHashtags, hashtag, user_id})
+  #   {:noreply, user_id}
+  # end
+
+  # def handle_cast({:queryMentions}, user_id) do
+  #   GenServer.cast(:server, {:queryMentions, user_id})
+  #   {:noreply, user_id}
+  # end
+
+  def handle_call({:querySubscribed}, _from, user_id) do
+    tweets = GenServer.call(:server, {:querySubscribed, user_id})
+    #IO.inspect(["query subscribed: ", tweets])
+    CounterService.update_counter(:incrementQueryTweetsCount)
+    IO.puts("Querying subscribed tweets of #{user_id}:\n" <>
+            Utils.query_subscribed_tweets_prettify(tweets))
+    {:reply, tweets, user_id}
   end
 
-  def handle_cast({:queryHashtags, hashtag}, user_id) do
-    GenServer.cast(:server, {:queryHashtags, hashtag, user_id})
-    {:noreply, user_id}
+  def handle_call({:queryHashtags, hashtag}, _from, user_id) do
+    tweets = GenServer.call(:server, {:queryHashtags, hashtag, user_id})
+    #IO.inspect(["query hashtag " <> hashtag <> " : ", tweets])
+    CounterService.update_counter(:incrementQueryHashtagsCount)
+    IO.puts("#{user_id} querying hashtag #{hashtag}:\n" <>
+            Utils.query_hashtags_prettify(tweets))
+    {:reply, tweets, user_id}
   end
 
-  def handle_cast({:queryMentions}, user_id) do
-    GenServer.cast(:server, {:queryMentions, user_id})
-    {:noreply, user_id}
+  def handle_call({:queryMentions}, _from, user_id) do
+    tweets = GenServer.call(:server, {:queryMentions, user_id})
+    CounterService.update_counter(:incrementQueryMentionsCount)
+    #IO.inspect(["query mentions of " <> user_id <> " : ", tweets])
+    IO.puts("Querying mentions of #{user_id}:\n" <>
+            Utils.query_mentions_prettify(tweets))
+    {:reply, tweets, user_id}
   end
 
 end
