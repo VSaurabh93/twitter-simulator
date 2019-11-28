@@ -60,7 +60,11 @@ defmodule Utils do
         [user <> ":"] ++ tweets
     end)
     prettified = List.flatten(prettified)
-    Enum.reduce(prettified, fn(x, acc) -> acc <> "\n" <> x end) <> "\n"
+    if prettified != [] do
+      Enum.reduce(prettified, fn(x, acc) -> acc <> "\n" <> x end) <> "\n"
+    else
+      ""
+    end
   end
 
   def query_hashtags_prettify(query_result) do
