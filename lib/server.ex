@@ -21,7 +21,7 @@ use GenServer
   end
 
   def handle_call({:logoff_user, user}, _from, state) do
-    TwitterEngine.login_user(user)
+    TwitterEngine.logoff_user(user)
     {:reply, :loggedOut, state}
   end
 

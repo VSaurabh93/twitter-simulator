@@ -42,11 +42,11 @@ defmodule TwitterSimulator do
     :timer.sleep(1000)
 
     Enum.each(clients, fn {_user, pid} ->
-      GenServer.call(pid, {:querySubscribed})
+      GenServer.call(pid, :querySubscribed)
     end)
 
     Enum.each(clients, fn {_user, pid} ->
-      GenServer.call(pid, {:queryMentions})
+      GenServer.call(pid, :queryMentions)
     end)
 
     Enum.each(clients, fn {_user, pid} ->

@@ -93,7 +93,7 @@ defmodule Client do
   #   {:noreply, user_id}
   # end
 
-  def handle_call({:querySubscribed}, _from, user_id) do
+  def handle_call(:querySubscribed, _from, user_id) do
     tweets = GenServer.call(:server, {:querySubscribed, user_id})
     #IO.inspect(["query subscribed: ", tweets])
     CounterService.update_counter(:incrementQueryTweetsCount)
@@ -111,7 +111,7 @@ defmodule Client do
     {:reply, tweets, user_id}
   end
 
-  def handle_call({:queryMentions}, _from, user_id) do
+  def handle_call(:queryMentions, _from, user_id) do
     tweets = GenServer.call(:server, {:queryMentions, user_id})
     CounterService.update_counter(:incrementQueryMentionsCount)
     #IO.inspect(["query mentions of " <> user_id <> " : ", tweets])
