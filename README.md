@@ -20,16 +20,16 @@ A client-server application that mirrors the functionality of Twitter. The idea 
 For simulations with a randomised distribution of subscribers:
 
 ```mix run --no-halt twitter_simulator.exs num_users num_msg```
-example:
+#### example:
 `mix run --no-halt twitter_simulator.exs 1000 10`
 
 For simulations with a [zipf distribution](https://en.wikipedia.org/wiki/Zipf%27s_law) of subscribers:
 
 `mix run --no-halt twitter_simulator.exs num_users num_msg zipf`
-example:
+#### example:
 `mix run --no-halt twitter_simulator.exs 1000 10 zipf`
 
-# Simulation workflow (It’s sequential):
+# Simulation workflow (sequential):
 1. The simulator process (see twitter_simulator.ex) starts up the server process first, then it create the clients.
 2. Clients are registered with the server and logged in
 3. The clients are given subscribers either randomly or using a zipf distribution (distribution can be chosen through command line arguments)
